@@ -130,13 +130,13 @@ class Device:
         self.dev.write(struct.pack('>I', size))
         self.check_int(self.dev.read(4), size) # echo size
 
-        self.check(self.dev.read(2), b'\x00\x00') # arg check
+        assert from_bytes(self.dev.read(2), 2) <= 0xff
 
         for _ in range(size):
             data = struct.unpack('>I', self.dev.read(4))[0]
             result.append(data)
 
-        self.check(self.dev.read(2), b'\x00\x00') # status
+        assert from_bytes(self.dev.read(2), 2) <= 0xff
 
         # support scalar
         if len(result) == 1:
