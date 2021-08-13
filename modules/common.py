@@ -10,9 +10,7 @@ from logger import log
 BAUD = 115200
 TIMEOUT = 5
 
-
-CRYPTO_BASE = 0x10210000 # for karnak
-
+CRYPTO_BASE = 0x1020D000 # for cupcake
 
 def to_bytes(value, size=1, endian='>'):
     return {
