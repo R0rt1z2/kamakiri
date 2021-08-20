@@ -35,7 +35,7 @@ def main(dev):
     # 1.1) Parse gpt
     gpt = parse_gpt(dev)
     log("gpt_parsed = {}".format(gpt))
-    if "lk" not in gpt or "tee1" not in gpt or "boot" not in gpt or "recovery" not in gpt:
+    if "lk_a" not in gpt or "tee1" not in gpt or "boot_a" not in gpt:
         raise RuntimeError("bad gpt")
 
     # 2) Sanity check boot0
