@@ -4,8 +4,8 @@
 #include "../lk-payload/common.h"
 
 void low_uart_put(int ch) {
-    volatile uint32_t *uart_reg0 = (volatile uint32_t*)0x11003014;
-    volatile uint32_t *uart_reg1 = (volatile uint32_t*)0x11003000;
+    volatile uint32_t *uart_reg0 = (volatile uint32_t*)0x11005014;
+    volatile uint32_t *uart_reg1 = (volatile uint32_t*)0x11005000;
 
     while ( !((*uart_reg0) & 0x20) )
     {}

