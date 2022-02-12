@@ -59,8 +59,9 @@ def load_payload(dev):
     dev.write32(addr, [0xA1000]) # 00 10 0A 00
     result = dev.read32(addr)
 
-    readl = 0x24
-    result = dev.read32(addr - 0x20, readl//4)
+    cnt = 15
+    for i in range(cnt):
+        dev.read32(addr - (cnt - i) * 4, cnt - i + 1)
 
     dev.write32(addr, 0)
 

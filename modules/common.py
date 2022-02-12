@@ -11,7 +11,7 @@ BAUD = 115200
 TIMEOUT = 5
 
 
-CRYPTO_BASE = 0x10210000 # for karnak
+CRYPTO_BASE = 0x10050000 # for maverick
 
 
 def to_bytes(value, size=1, endian='>'):
